@@ -1,0 +1,42 @@
+:root {
+  /* Paleta extraída da identidade visual NABIMAKE */
+  --bege: #f5ebe0;
+  --bege-claro: #fbf6f0;
+  --marrom: #5e4028;
+  --marrom-escuro: #3d2a1a;
+  --rosa-claro: #ffdeef;
+  --rosa-medio: #e79dc1;
+  --rosa-escuro: #c96f9b;
+  --branco: #ffffff;
+
+  --fonte-display: "Fraunces", Georgia, serif;
+  --fonte-corpo: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --sombra-card: 0 6px 20px rgba(94, 64, 40, 0.1);
+  --sombra-flutuante: 0 10px 30px rgba(94, 64, 40, 0.28);
+
+  --raio: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bege);
+  color: var(--marrom-escuro);
+  font-family: var(--fonte-corpo);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
