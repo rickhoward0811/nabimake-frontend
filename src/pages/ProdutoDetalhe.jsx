@@ -13,6 +13,7 @@ export default function ProdutoDetalhe() {
   const [quantidade, setQuantidade] = useState(1);
   const [imagemPrincipal, setImagemPrincipal] = useState('');
   const [produtosRelacionados, setProdutosRelacionados] = useState([]);
+  const [produtosAleatorios, setProdutosAleatorios] = useState([]);
   const [isAdded, setIsAdded] = useState(false);
   const { addToCart } = useCart();
 
@@ -29,11 +30,22 @@ export default function ProdutoDetalhe() {
           setVariacaoSelecionada(response.data.variacoes[0]);
         }
 
+        // Buscar todos os produtos para relacionados
         const todosProdutos = await api.get('/produtos');
+        
+        // Buscar produtos da mesma categoria
         const relacionados = todosProdutos.data.filter(
           p => p.categoria === response.data.categoria && p.id !== response.data.id
         );
-        setProdutosRelacionados(relacionados.slice(0, 4));
+        
+        // Buscar produtos aleatórios (fallback)
+        const shuffled = [...todosProdutos.data]
+          .filter(p => p.id !== response.data.id)
+          .sort(() => 0.5 - Math.random());
+        const aleatorios = shuffled.slice(0, 4);
+        
+        setProdutosRelacionados(relacionados);
+        setProdutosAleatorios(aleatorios);
       } catch (error) {
         console.error('Erro ao carregar produto:', error);
       } finally {
@@ -121,7 +133,7 @@ export default function ProdutoDetalhe() {
           <span>Voltar para produtos</span>
         </Link>
 
-        {/* Card Principal - Com glass mais refinado */}
+        {/* Card Principal */}
         <div className="bg-white rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl"
           style={{
             background: 'rgba(255,255,255,0.85)',
@@ -177,14 +189,13 @@ export default function ProdutoDetalhe() {
                 {produto.nome}
               </h1>
 
-              {/* Preço - MAIOR E MAIS DESTAQUE */}
               <div className="flex items-center gap-3 py-2">
                 <span className="text-4xl md:text-5xl font-bold text-[#3D2C1E] tracking-tight">
                   R$ {parseFloat(produto.preco).toFixed(2).replace('.', ',')}
                 </span>
               </div>
 
-              {/* Badges Premium - Com fundo branco, sombra e ícone dourado */}
+              {/* Badges */}
               <div className="flex flex-wrap gap-3 py-2">
                 <div className="flex items-center gap-2 text-xs font-medium text-[#3D2C1E]/80 bg-white px-3.5 py-2 rounded-full shadow-md border border-[#F5F0E8]">
                   <Truck size={14} className="text-[#D4A84B]" />
@@ -257,7 +268,6 @@ export default function ProdutoDetalhe() {
                   </div>
                 </div>
 
-                {/* Botão - DESTAQUE PRINCIPAL */}
                 <button
                   onClick={handleAddToCart}
                   className={`flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white transition-all duration-300 ${
@@ -274,25 +284,42 @@ export default function ProdutoDetalhe() {
           </div>
         </div>
 
-        {/* Produtos Relacionados - Fundo mais escuro para profundidade */}
-        {produtosRelacionados.length > 0 && (
-          <div className="mt-16 rounded-3xl p-8" style={{ background: '#FCF7F3' }}>
-            <div className="flex items-center gap-3 mb-6">
-              <h2 className="text-xl font-bold text-[#3D2C1E]">
-                Produtos Relacionados
-              </h2>
+        {/* Produtos Relacionados - COM FALLBACK */}
+        <div className="mt-16 rounded-3xl p-8" style={{ background: '#FCF7F3' }}>
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-xl font-bold text-[#3D2C1E]">
+              {produtosRelacionados.length > 0 ? 'Produtos Relacionados' : 'Você também pode gostar'}
+            </h2>
+            {produtosRelacionados.length > 0 && (
               <span className="text-sm text-[#D46A8C] bg-white px-3 py-1 rounded-full border border-[#D46A8C]/10">
                 {produto.categoria}
               </span>
-            </div>
-            
+            )}
+          </div>
+
+          {produtosRelacionados.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {produtosRelacionados.map((produtoRelacionado) => (
                 <ProductCard key={produtoRelacionado.id} produto={produtoRelacionado} />
               ))}
             </div>
-          </div>
-        )}
+          ) : produtosAleatorios.length > 0 ? (
+            <div>
+              <p className="text-sm text-gray-500 mb-4">
+                Sem produtos da mesma categoria por enquanto. Confira estes destaques:
+              </p>
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {produtosAleatorios.map((produtoAleatorio) => (
+                  <ProductCard key={produtoAleatorio.id} produto={produtoAleatorio} />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500 text-center py-8">
+              Sem estoque de produtos relacionados por enquanto.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

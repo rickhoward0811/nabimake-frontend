@@ -126,23 +126,6 @@ export default function Hero() {
               Ver catálogo
             </button>
           </div>
-
-          {/* Estatísticas */}
-          <dl className="mt-12 grid max-w-lg grid-cols-3 gap-6">
-            {[
-              { label: 'Clientes encantadas', value: 12400, suffix: '+' },
-              { label: 'Produtos originais', value: 320, suffix: '+' },
-              { label: 'Avaliações 5 estrelas', value: 8900, suffix: '' },
-            ].map((s) => (
-              <div key={s.label}>
-                <dt className="sr-only">{s.label}</dt>
-                <dd className="font-display text-3xl text-[#3D2C1E]">
-                  <CountUp to={s.value} suffix={s.suffix} />
-                </dd>
-                <p className="text-xs text-[#3D2C1E]/60">{s.label}</p>
-              </div>
-            ))}
-          </dl>
         </div>
 
         {/* Coluna direita - Imagem com cards flutuantes */}

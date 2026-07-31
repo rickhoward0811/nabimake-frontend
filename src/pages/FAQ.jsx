@@ -38,7 +38,7 @@ export default function FAQ() {
       id: 3,
       categoria: 'Pagamento',
       pergunta: 'Quais formas de pagamento são aceitas?',
-      resposta: 'Aceitamos PIX, cartões de crédito (parcelado em até 6x sem juros), boleto bancário e transferência via WhatsApp Pay. Todas as formas são seguras e processadas por plataformas confiáveis.'
+      resposta: 'Aceitamos PIX, cartões de crédito e transferência via WhatsApp Pay. Todas as formas são seguras e processadas por plataformas confiáveis.'
     },
     {
       id: 4,

@@ -12,7 +12,7 @@ const FAQ_PREVIEW = [
   {
     id: 2,
     pergunta: 'Quais formas de pagamento são aceitas?',
-    resposta: 'Aceitamos PIX, cartões de crédito (parcelado em até 6x sem juros), boleto bancário e transferência via WhatsApp Pay. Todas as formas são seguras e processadas por plataformas confiáveis.'
+    resposta: 'Aceitamos PIX, cartões de crédito e transferência via WhatsApp Pay. Todas as formas são seguras e processadas por plataformas confiáveis.'
   },
   {
     id: 3,
@@ -31,7 +31,7 @@ export default function FAQPreview() {
   return (
     <section className="py-16 px-4">
       <div className="max-w-[1300px] mx-auto">
-        {/* Card Flutuante com Glassmorphism - Sombra e Borda mais fortes */}
+        {/* Card Flutuante com Glassmorphism */}
         <div 
           className="rounded-[32px] p-8 md:p-12 lg:p-16"
           style={{
