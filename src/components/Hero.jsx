@@ -9,18 +9,17 @@ const SPARKLES = Array.from({ length: 14 }, (_, i) => ({
   size: 3 + (i % 4),
 }));
 
-// Componente de Estrelas (avaliação)
+// Componente de Estrelas (avaliação) - SEM NÚMEROS
 function Stars({ rating }) {
   return (
     <div className="flex gap-0.5">
       {[...Array(5)].map((_, i) => (
         <Star
           key={i}
-          size={12}
-          className={i < Math.floor(rating) ? 'fill-[#D4A84B] text-[#D4A84B]' : 'text-gray-300'}
+          size={14}
+          className={i < Math.floor(rating) ? 'fill-[#D4A84B] text-[#D4A84B]' : 'fill-gray-200 text-gray-200'}
         />
       ))}
-      <span className="text-xs text-gray-500 ml-1">{rating}</span>
     </div>
   );
 }
@@ -149,7 +148,7 @@ export default function Hero() {
               className="h-24 w-full rounded-2xl object-cover"
             />
             <p className="mt-2 text-xs font-medium text-[#3D2C1E] leading-tight">Primer Anticraquelamento - Max Love</p>
-            <Stars rating={4.8} />
+            <Stars rating={5} />
             <p className="text-sm font-semibold text-[#D46A8C]">R$ 16,90</p>
           </div>
 
@@ -162,7 +161,7 @@ export default function Hero() {
               className="h-24 w-full rounded-2xl object-cover"
             />
             <p className="mt-2 text-xs font-medium text-[#3D2C1E] leading-tight">Primer Vitamina C - Max Love</p>
-            <Stars rating={4.9} />
+            <Stars rating={5} />
             <p className="text-sm font-semibold text-[#D46A8C]">R$ 16,90</p>
           </div>
         </div>

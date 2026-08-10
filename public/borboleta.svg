@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Asa superior esquerda -->
+  <path d="M50 25 C35 10 5 18 10 45 C12 55 25 58 45 50 L50 25Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.2"/>
+  <!-- Asa superior direita -->
+  <path d="M50 25 C65 10 95 18 90 45 C88 55 75 58 55 50 L50 25Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.2"/>
+  <!-- Asa inferior esquerda -->
+  <path d="M48 52 C30 58 10 70 20 90 C25 98 38 88 50 75 L48 52Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.2"/>
+  <!-- Asa inferior direita -->
+  <path d="M52 52 C70 58 90 70 80 90 C75 98 62 88 50 75 L52 52Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.2"/>
+  <!-- Corpo -->
+  <ellipse cx="50" cy="50" rx="4" ry="28" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.2"/>
+  <!-- Antenas -->
+  <path d="M48 22 C42 10 38 6 34 4" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M52 22 C58 10 62 6 66 4" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- Detalhes nas asas superiores -->
+  <path d="M35 30 C30 35 25 40 28 48" fill="none" stroke="#FFFFFF" stroke-width="0.8" opacity="0.6"/>
+  <path d="M65 30 C70 35 75 40 72 48" fill="none" stroke="#FFFFFF" stroke-width="0.8" opacity="0.6"/>
+</svg>
