@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAdmin } from '../../context/AdminContext';
 import { Lock, Shield, AlertCircle, Loader } from 'lucide-react';
 
+// 🔒 URL SEGURA DO ADMIN - MUDE AQUI
+const ADMIN_BASE = '/n4b1m4k3jul143r1c4rd0l1nd0s';
+
 export default function AdminLogin() {
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
@@ -14,7 +17,7 @@ export default function AdminLogin() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/admin/dashboard');
+      navigate(`${ADMIN_BASE}/dashboard`);
     }
   }, [isAuthenticated, navigate]);
 
@@ -33,7 +36,7 @@ export default function AdminLogin() {
     
     if (result.success) {
       setAttempts(0);
-      navigate('/admin/dashboard');
+      navigate(`${ADMIN_BASE}/dashboard`);
     } else {
       const novasTentativas = attempts + 1;
       setAttempts(novasTentativas);
@@ -134,6 +137,11 @@ export default function AdminLogin() {
           </button>
         </form>
 
+        <div className="mt-6 text-center">
+          <p className="text-xs text-gray-400">
+            🔒 Área segura
+          </p>
+        </div>
       </div>
     </div>
   );

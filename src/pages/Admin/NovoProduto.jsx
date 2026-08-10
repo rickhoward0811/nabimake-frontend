@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, X, Image, Tag, DollarSign, List, CheckCircle, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save, Image, Tag, DollarSign, List, CheckCircle, Plus, Trash2 } from 'lucide-react';
+import { useAdmin } from '../../context/AdminContext';
 import api from '../../api/api';
 import Toast from '../../components/Toast';
+
+// 🔒 URL SEGURA DO ADMIN - MUDE AQUI
+const ADMIN_BASE = '/n4b1m4k3jul143r1c4rd0l1nd0s';
 
 export default function NovoProduto() {
   const navigate = useNavigate();
@@ -73,7 +77,6 @@ export default function NovoProduto() {
     setLoading(true);
 
     try {
-      // Validar variações
       const variacoesInvalidas = variacoes.some(v => !v.cor.trim());
       if (variacoesInvalidas) {
         showToast('Preencha o nome de todas as variações', 'error');
@@ -91,7 +94,7 @@ export default function NovoProduto() {
       showToast('✅ Produto criado com sucesso!', 'success');
       
       setTimeout(() => {
-        navigate('/admin/dashboard');
+        navigate(`${ADMIN_BASE}/dashboard`);
       }, 1500);
     } catch (error) {
       console.error('Erro ao criar produto:', error);
@@ -104,10 +107,9 @@ export default function NovoProduto() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        {/* Header */}
         <div className="flex items-center gap-4 mb-6">
           <button
-            onClick={() => navigate('/admin/dashboard')}
+            onClick={() => navigate(`${ADMIN_BASE}/dashboard`)}
             className="p-2.5 bg-white rounded-xl shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-200 group"
           >
             <ArrowLeft size={20} className="text-gray-600 group-hover:text-gray-900" />
@@ -198,10 +200,10 @@ export default function NovoProduto() {
             />
           </div>
 
-          {/* URL da Imagem Principal */}
+          {/* URL da Imagem */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-              URL da Imagem Principal
+              URL da Imagem
             </label>
             <div className="relative">
               <Image className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -357,7 +359,7 @@ export default function NovoProduto() {
           <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
             <button
               type="button"
-              onClick={() => navigate('/admin/dashboard')}
+              onClick={() => navigate(`${ADMIN_BASE}/dashboard`)}
               className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all hover:scale-[1.02] active:scale-95"
             >
               Cancelar

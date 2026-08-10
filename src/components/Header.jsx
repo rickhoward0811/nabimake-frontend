@@ -5,6 +5,9 @@ import { useCart } from "../context/CartContext";
 import { useAdmin } from "../context/AdminContext";
 import IconeBorboleta from "./IconeBorboleta";
 
+// 🔒 URL SEGURA DO ADMIN
+const ADMIN_BASE = '/n4b1m4k3jul143r1c4rd0l1nd0s';
+
 export default function Header({ termoBusca, onBuscar }) {
   const [menuAberto, setMenuAberto] = useState(false);
   const [buscaLocal, setBuscaLocal] = useState(termoBusca || '');
@@ -49,7 +52,7 @@ export default function Header({ termoBusca, onBuscar }) {
           </span>
         </Link>
 
-        {/* Busca - CORRIGIDA */}
+        {/* Busca */}
         <form onSubmit={handleSubmitBusca} className="flex-1 max-w-[440px] ml-0 sm:ml-2 flex items-center gap-2 bg-bege-claro border border-rosa-claro rounded-full px-4 py-2.5 transition-colors duration-200 focus-within:border-rosa-medio focus-within:bg-white order-3 sm:order-none w-full sm:w-auto">
           <Search className="text-marrom flex-shrink-0" size={16} />
           <input
@@ -70,10 +73,13 @@ export default function Header({ termoBusca, onBuscar }) {
             Produtos
           </Link>
 
-          {/* Admin Link - Só aparece quando autenticado */}
+          {/* 🔒 Admin Link - APARECE APENAS QUANDO LOGADO */}
           {isAuthenticated && (
             <>
-              <Link to="/admin/dashboard" className="font-corpo font-semibold text-[0.9rem] text-pink-500 no-underline px-3.5 py-2 rounded-full hover:bg-pink-50 transition-colors duration-200 flex items-center gap-1.5">
+              <Link 
+                to={`${ADMIN_BASE}/dashboard`} 
+                className="font-corpo font-semibold text-[0.9rem] text-pink-500 no-underline px-3.5 py-2 rounded-full hover:bg-pink-50 transition-colors duration-200 flex items-center gap-1.5"
+              >
                 <Shield size={16} />
                 Admin
               </Link>
@@ -111,7 +117,6 @@ export default function Header({ termoBusca, onBuscar }) {
         </button>
       </div>
 
-      {/* Dropdown Mobile */}
       {menuAberto && (
         <div className="border-t border-rosa-claro px-5 pb-4 pt-2">
           <nav className="flex flex-col gap-1">
@@ -137,11 +142,11 @@ export default function Header({ termoBusca, onBuscar }) {
               Carrinho
             </Link>
             
-            {/* Admin Mobile - Só aparece quando autenticado */}
+            {/* 🔒 Admin Link Mobile - APARECE APENAS QUANDO LOGADO */}
             {isAuthenticated && (
               <>
                 <Link 
-                  to="/admin/dashboard" 
+                  to={`${ADMIN_BASE}/dashboard`} 
                   onClick={() => setMenuAberto(false)} 
                   className="font-corpo font-semibold text-[0.9rem] text-pink-500 no-underline px-3.5 py-2.5 rounded-xl hover:bg-pink-50 transition-colors duration-200 flex items-center gap-2"
                 >

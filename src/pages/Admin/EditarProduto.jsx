@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Trash2, Image, Tag, DollarSign, List, Plus } from 'lucide-react';
+import { useAdmin } from '../../context/AdminContext';
 import api from '../../api/api';
 import ConfirmModal from '../../components/ConfirmModal';
 import Toast from '../../components/Toast';
+
+
+const ADMIN_BASE = '/n4b1m4k3jul143r1c4rd0l1nd0s';
 
 export default function EditarProduto() {
   const { id } = useParams();
@@ -50,7 +54,7 @@ export default function EditarProduto() {
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
       showToast('Erro ao carregar produto', 'error');
-      setTimeout(() => navigate('/admin/dashboard'), 1500);
+      setTimeout(() => navigate(`${ADMIN_BASE}/dashboard`), 1500);
     } finally {
       setLoading(false);
     }
@@ -110,7 +114,7 @@ export default function EditarProduto() {
       showToast('✅ Produto atualizado com sucesso!', 'success');
       
       setTimeout(() => {
-        navigate('/admin/dashboard');
+        navigate(`${ADMIN_BASE}/dashboard`);
       }, 1500);
     } catch (error) {
       console.error('Erro ao atualizar produto:', error);
@@ -129,7 +133,7 @@ export default function EditarProduto() {
       await api.delete(`/admin/produtos/${id}`);
       showToast('✅ Produto excluído com sucesso!', 'success');
       setTimeout(() => {
-        navigate('/admin/dashboard');
+        navigate(`${ADMIN_BASE}/dashboard`);
       }, 1500);
     } catch (error) {
       console.error('Erro ao excluir:', error);
@@ -151,11 +155,10 @@ export default function EditarProduto() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate('/admin/dashboard')}
+              onClick={() => navigate(`${ADMIN_BASE}/dashboard`)}
               className="p-2.5 bg-white rounded-xl shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-200 group"
             >
               <ArrowLeft size={20} className="text-gray-600 group-hover:text-gray-900" />
@@ -254,10 +257,10 @@ export default function EditarProduto() {
             />
           </div>
 
-          {/* URL da Imagem Principal */}
+          {/* URL da Imagem */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-              URL da Imagem Principal
+              URL da Imagem
             </label>
             <div className="relative">
               <Image className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -413,7 +416,7 @@ export default function EditarProduto() {
           <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
             <button
               type="button"
-              onClick={() => navigate('/admin/dashboard')}
+              onClick={() => navigate(`${ADMIN_BASE}/dashboard`)}
               className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all hover:scale-[1.02] active:scale-95"
             >
               Cancelar

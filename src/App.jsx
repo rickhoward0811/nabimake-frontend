@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { AdminProvider } from './context/AdminContext';
@@ -9,7 +9,7 @@ import Produtos from './pages/Produtos';
 import ProdutoDetalhe from './pages/ProdutoDetalhe';
 import Carrinho from './pages/Carrinho';
 import FAQ from './pages/FAQ';
-import NotFound from './pages/NotFound'; // ← IMPORTE A PÁGINA 404
+import NotFound from './pages/NotFound';
 import Header from './components/Header';
 
 // Admin Pages
@@ -18,7 +18,16 @@ import AdminDashboard from './pages/Admin/Dashboard';
 import NovoProduto from './pages/Admin/NovoProduto';
 import EditarProduto from './pages/Admin/EditarProduto';
 
+// 🔒 URL SEGURA DO ADMIN - MUDE AQUI
+const ADMIN_BASE = '/n4b1m4k3jul143r1c4rd0l1nd0s';
+
 function App() {
+  const [termoBusca, setTermoBusca] = useState('');
+
+  const handleBuscar = (termo) => {
+    setTermoBusca(termo);
+  };
+
   return (
     <AdminProvider>
       <CartProvider>
@@ -28,20 +37,20 @@ function App() {
             v7_relativeSplatPath: true,
           }}
         >
-          <Header />
+          <Header termoBusca={termoBusca} onBuscar={handleBuscar} />
           <NotificationContainer />
           <Routes>
-            {/* Rotas públicas */}
+            
             <Route path="/" element={<Home />} />
             <Route path="/produtos" element={<Produtos />} />
             <Route path="/produto/:id" element={<ProdutoDetalhe />} />
             <Route path="/carrinho" element={<Carrinho />} />
             <Route path="/faq" element={<FAQ />} />
             
-            {/* Rotas Admin */}
-            <Route path="/admin/login" element={<AdminLogin />} />
+            
+            <Route path={`${ADMIN_BASE}/login`} element={<AdminLogin />} />
             <Route 
-              path="/admin/dashboard" 
+              path={`${ADMIN_BASE}/dashboard`} 
               element={
                 <ProtectedRoute>
                   <AdminDashboard />
@@ -49,7 +58,7 @@ function App() {
               } 
             />
             <Route 
-              path="/admin/produtos/novo" 
+              path={`${ADMIN_BASE}/produtos/novo`} 
               element={
                 <ProtectedRoute>
                   <NovoProduto />
@@ -57,7 +66,7 @@ function App() {
               } 
             />
             <Route 
-              path="/admin/produtos/editar/:id" 
+              path={`${ADMIN_BASE}/produtos/editar/:id`} 
               element={
                 <ProtectedRoute>
                   <EditarProduto />
@@ -65,7 +74,7 @@ function App() {
               } 
             />
 
-            {/* Rota 404 - SEMPRE POR ÚLTIMO */}
+            {/* Rota 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

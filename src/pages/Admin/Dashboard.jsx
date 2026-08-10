@@ -6,6 +6,9 @@ import ConfirmModal from '../../components/ConfirmModal';
 import Toast from '../../components/Toast';
 import api from '../../api/api';
 
+// 🔒 URL SEGURA DO ADMIN - MUDE AQUI
+const ADMIN_BASE = '/n4b1m4k3jul143r1c4rd0l1nd0s';
+
 export default function AdminDashboard() {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -140,7 +143,7 @@ export default function AdminDashboard() {
         {/* Toolbar */}
         <div className="flex flex-wrap gap-4 mb-6">
           <Link
-            to="/admin/produtos/novo"
+            to={`${ADMIN_BASE}/produtos/novo`}
             className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-xl hover:bg-gray-800 transition-all hover:scale-105"
           >
             <Plus size={18} />
@@ -210,7 +213,7 @@ export default function AdminDashboard() {
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Link
-                            to={`/admin/produtos/editar/${produto.id}`}
+                            to={`${ADMIN_BASE}/produtos/editar/${produto.id}`}
                             className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
                             title="Editar"
                           >
