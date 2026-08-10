@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import api from '../api/api';
 import ProductCard from '../components/ProductCard';
 
 export default function Produtos() {
+  const [searchParams] = useSearchParams();
+  const buscaUrl = searchParams.get('busca') || '';
+
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [busca, setBusca] = useState('');
+  const [busca, setBusca] = useState(buscaUrl);
   const [categoriaAtiva, setCategoriaAtiva] = useState('Todos');
   const [categorias, setCategorias] = useState(['Todos']);
 
@@ -27,6 +30,11 @@ export default function Produtos() {
 
     fetchProdutos();
   }, []);
+
+  // Atualizar busca quando a URL mudar
+  useEffect(() => {
+    setBusca(buscaUrl);
+  }, [buscaUrl]);
 
   const produtosFiltrados = produtos.filter(produto => {
     const matchCategoria = categoriaAtiva === 'Todos' || produto.categoria === categoriaAtiva;
@@ -95,7 +103,7 @@ export default function Produtos() {
             <p className="text-gray-400 text-sm mt-1">Tente ajustar sua busca ou filtros</p>
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
             {produtosFiltrados.map((produto) => (
               <Link to={`/produto/${produto.id}`} key={produto.id}>
                 <ProductCard produto={produto} />

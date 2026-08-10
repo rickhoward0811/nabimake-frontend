@@ -17,6 +17,23 @@ export default function ProdutoDetalhe() {
   const [isAdded, setIsAdded] = useState(false);
   const { addToCart } = useCart();
 
+  // 🔥 Rolar para o CONTEÚDO PRINCIPAL (entre título e botão)
+  useEffect(() => {
+    setTimeout(() => {
+      const conteudoPrincipal = document.getElementById('conteudo-produto');
+      if (conteudoPrincipal) {
+        const rect = conteudoPrincipal.getBoundingClientRect();
+        const offset = window.innerHeight / 2 - rect.height / 2;
+        window.scrollTo({
+          top: window.scrollY + rect.top - offset + 100,
+          behavior: 'smooth'
+        });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+    }, 200);
+  }, []);
+
   useEffect(() => {
     const fetchProduto = async () => {
       try {
@@ -89,8 +106,8 @@ export default function ProdutoDetalhe() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FFFDFC] px-4 py-8 lg:px-6">
-        <div className="mx-auto max-w-6xl">
+      <div className="min-h-screen bg-[#FFFDFC] px-4 py-8 lg:px-6 flex items-center justify-center">
+        <div className="max-w-6xl w-full">
           <div className="animate-pulse">
             <div className="h-8 bg-[#F5F0E8] rounded w-32 mb-6"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -110,8 +127,8 @@ export default function ProdutoDetalhe() {
 
   if (!produto) {
     return (
-      <div className="min-h-screen bg-[#FFFDFC] px-4 py-8 lg:px-6">
-        <div className="mx-auto max-w-6xl text-center py-16">
+      <div className="min-h-screen bg-[#FFFDFC] px-4 py-8 lg:px-6 flex items-center justify-center">
+        <div className="max-w-6xl w-full text-center py-16">
           <h2 className="text-2xl font-bold text-[#3D2C1E]">Produto não encontrado</h2>
           <p className="text-[#3D2C1E]/70 mt-2">O produto que você procura não existe ou foi removido.</p>
           <Link to="/produtos" className="inline-block mt-6 px-6 py-3 bg-[#3D2C1E] text-white rounded-full hover:bg-[#3D2C1E]/80 transition-colors">
@@ -124,7 +141,7 @@ export default function ProdutoDetalhe() {
 
   return (
     <div className="min-h-screen bg-[#FFFDFC] px-4 py-8 lg:px-6">
-      <div className="mx-auto max-w-6xl">
+      <div className="max-w-6xl mx-auto">
         <Link 
           to="/produtos" 
           className="inline-flex items-center gap-2 text-[#3D2C1E]/60 hover:text-[#3D2C1E] transition-all duration-300 hover:translate-x-[-4px] mb-6 group"
@@ -134,7 +151,9 @@ export default function ProdutoDetalhe() {
         </Link>
 
         {/* Card Principal */}
-        <div className="bg-white rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl"
+        <div 
+          id="conteudo-produto"
+          className="bg-white rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl"
           style={{
             background: 'rgba(255,255,255,0.85)',
             backdropFilter: 'blur(16px)',
@@ -177,7 +196,7 @@ export default function ProdutoDetalhe() {
               )}
             </div>
 
-            {/* Informações */}
+            {/* Informações - FOCO PRINCIPAL */}
             <div className="space-y-6">
               <div className="flex items-center gap-2">
                 <span className="inline-block text-xs uppercase tracking-[2px] text-[#D46A8C] font-semibold bg-[#FFF5F7] px-3 py-1 rounded-full border border-[#D46A8C]/10">
@@ -284,7 +303,7 @@ export default function ProdutoDetalhe() {
           </div>
         </div>
 
-        {/* Produtos Relacionados - COM FALLBACK */}
+        {/* Produtos Relacionados */}
         <div className="mt-16 rounded-3xl p-8" style={{ background: '#FCF7F3' }}>
           <div className="flex items-center gap-3 mb-6">
             <h2 className="text-xl font-bold text-[#3D2C1E]">
@@ -298,7 +317,7 @@ export default function ProdutoDetalhe() {
           </div>
 
           {produtosRelacionados.length > 0 ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
               {produtosRelacionados.map((produtoRelacionado) => (
                 <ProductCard key={produtoRelacionado.id} produto={produtoRelacionado} />
               ))}
@@ -308,7 +327,7 @@ export default function ProdutoDetalhe() {
               <p className="text-sm text-gray-500 mb-4">
                 Sem produtos da mesma categoria por enquanto. Confira estes destaques:
               </p>
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
                 {produtosAleatorios.map((produtoAleatorio) => (
                   <ProductCard key={produtoAleatorio.id} produto={produtoAleatorio} />
                 ))}

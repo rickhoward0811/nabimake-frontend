@@ -7,6 +7,7 @@ import IconeBorboleta from "./IconeBorboleta";
 
 export default function Header({ termoBusca, onBuscar }) {
   const [menuAberto, setMenuAberto] = useState(false);
+  const [buscaLocal, setBuscaLocal] = useState(termoBusca || '');
   const { getTotalItems } = useCart();
   const { isAuthenticated, logout } = useAdmin();
   const navigate = useNavigate();
@@ -20,6 +21,21 @@ export default function Header({ termoBusca, onBuscar }) {
     }
   };
 
+  const handleBuscaChange = (e) => {
+    const valor = e.target.value;
+    setBuscaLocal(valor);
+    if (onBuscar) {
+      onBuscar(valor);
+    }
+  };
+
+  const handleSubmitBusca = (e) => {
+    e.preventDefault();
+    if (buscaLocal.trim()) {
+      navigate(`/produtos?busca=${encodeURIComponent(buscaLocal.trim())}`);
+    }
+  };
+
   return (
     <header className="bg-white border-b border-rosa-claro sticky top-0 z-40">
       <div className="max-w-[1100px] mx-auto px-4 sm:px-7 py-4 flex flex-wrap items-center gap-4 sm:gap-7">
@@ -28,22 +44,22 @@ export default function Header({ termoBusca, onBuscar }) {
           <span className="flex items-center justify-center">
             <IconeBorboleta size={26} />
           </span>
-          <span className="font-display font-bold text-[1.3rem] tracking-wide text-marrom-escuro">
+          <span className="font-display font-bold text-[1.3rem] tracking-wide" style={{ color: '#ba916e' }}>
             NABIMAKE
           </span>
         </Link>
 
-        {/* Busca */}
-        <div className="flex-1 max-w-[440px] ml-0 sm:ml-2 flex items-center gap-2 bg-bege-claro border border-rosa-claro rounded-full px-4 py-2.5 transition-colors duration-200 focus-within:border-rosa-medio focus-within:bg-white order-3 sm:order-none w-full sm:w-auto">
+        {/* Busca - CORRIGIDA */}
+        <form onSubmit={handleSubmitBusca} className="flex-1 max-w-[440px] ml-0 sm:ml-2 flex items-center gap-2 bg-bege-claro border border-rosa-claro rounded-full px-4 py-2.5 transition-colors duration-200 focus-within:border-rosa-medio focus-within:bg-white order-3 sm:order-none w-full sm:w-auto">
           <Search className="text-marrom flex-shrink-0" size={16} />
           <input
             type="text"
-            value={termoBusca || ''}
-            onChange={(e) => onBuscar && onBuscar(e.target.value)}
+            value={buscaLocal}
+            onChange={handleBuscaChange}
             placeholder="Buscar por nome, marca ou categoria..."
-            className="border-none bg-transparent outline-none flex-1 font-corpo text-[0.9rem] text-marrom-escuro placeholder:text-[#b8a68f]"
+            className="border-none bg-transparent outline-none flex-1 font-corpo text-[0.9rem] text-marrom-escuro placeholder:text-[#b8a68f] min-w-[80px]"
           />
-        </div>
+        </form>
 
         {/* Nav Desktop */}
         <nav className="hidden sm:flex items-center gap-1.5 flex-shrink-0">

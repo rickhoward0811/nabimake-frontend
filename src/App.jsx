@@ -9,6 +9,7 @@ import Produtos from './pages/Produtos';
 import ProdutoDetalhe from './pages/ProdutoDetalhe';
 import Carrinho from './pages/Carrinho';
 import FAQ from './pages/FAQ';
+import NotFound from './pages/NotFound'; // ← IMPORTE A PÁGINA 404
 import Header from './components/Header';
 
 // Admin Pages
@@ -63,6 +64,9 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+
+            {/* Rota 404 - SEMPRE POR ÚLTIMO */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </CartProvider>

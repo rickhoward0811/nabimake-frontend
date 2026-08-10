@@ -14,7 +14,7 @@ export default function ProductGrid({ produtos, produtosAleatorios = [] }) {
   const idsAleatorios = new Set(produtosAleatorios.map(p => p.id));
 
   return (
-    <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <section className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
       {produtos.map((produto) => {
         const isNeon = idsAleatorios.has(produto.id);
         return <ProductCard key={produto.id} produto={produto} isNeon={isNeon} />;
