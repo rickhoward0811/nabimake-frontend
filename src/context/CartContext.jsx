@@ -117,37 +117,47 @@ export const CartProvider = ({ children }) => {
   };
 
   // Gerar mensagem WhatsApp - NOVO FORMATO
-  const getWhatsAppMessage = () => {
-    if (cart.length === 0) return '';
-    
-    let message = 'Olá! Me interessei pelos seguintes produtos:%0A%0A';
-    
-    cart.forEach((item, index) => {
-      const numero = index + 1;
-      const cor = item.variacao || 'Padrão';
-      
-      message += `${numero}. ${item.nome}%0A`;
-      message += `   Cor: ${cor}%0A`;
-      message += `   Quantidade: ${item.quantidade}%0A%0A`;
-    });
-    
-    message += 'Gostaria de finalizar minha compra!';
-    
-    return message;
-  };
+const getWhatsAppMessage = (cupom = null) => {
+  if (cart.length === 0) return '';
+
+  let message = 'Olá! Me interessei pelos seguintes produtos:%0A%0A';
+
+  cart.forEach((item, index) => {
+    const numero = index + 1;
+    const cor = item.variacao || 'Padrão';
+
+    message += `${numero}. ${item.nome}%0A`;
+    message += `   Cor: ${cor}%0A`;
+    message += `   Quantidade: ${item.quantidade}%0A%0A`;
+  });
+
+  message += 'Gostaria de finalizar minha compra!';
+
+  if (cupom) {
+    message += `%0A%0A*CUPOM APLICADO: ${cupom}*`;
+  }
+
+  return message;
+};
 
   // Abrir WhatsApp
-  const sendToWhatsApp = (phoneNumber = '5532987181375') => {
-    const message = getWhatsAppMessage();
-    if (!message) {
-      alert('Seu carrinho está vazio!');
-      return;
-    }
-    
-    console.log('📱 Mensagem WhatsApp:', message);
-    const url = `https://wa.me/${phoneNumber}?text=${message}`;
-    window.open(url, '_blank');
-  };
+  const sendToWhatsApp = (
+  phoneNumber = '5532987181375',
+  cupom = null
+) => {
+  const message = getWhatsAppMessage(cupom);
+
+  if (!message) {
+    alert('Seu carrinho está vazio!');
+    return;
+  }
+
+  console.log('Mensagem WhatsApp:', message);
+
+  const url = `https://wa.me/${phoneNumber}?text=${message}`;
+
+  window.open(url, '_blank');
+};
 
   const value = {
     cart,

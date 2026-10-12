@@ -18,6 +18,61 @@ export default function Carrinho() {
 
   const [produtosRelacionados, setProdutosRelacionados] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+const [codigoCupom, setCodigoCupom] = useState('');
+const [cupomAplicado, setCupomAplicado] = useState(null);
+const [mensagemCupom, setMensagemCupom] = useState('');
+const [carregandoCupom, setCarregandoCupom] = useState(false);
+
+const aplicarCupom = async () => {
+  if (!codigoCupom.trim()) {
+    setMensagemCupom('Digite um código de cupom.');
+    return;
+  }
+
+  setCarregandoCupom(true);
+  setMensagemCupom('');
+
+  try {
+    const response = await api.post('/cupons/validar', {
+      codigo: codigoCupom.trim(),
+      subtotal: getTotal()
+    });
+
+    setCupomAplicado(response.data);
+    setCodigoCupom(response.data.codigo);
+    setMensagemCupom('Cupom aplicado com sucesso!');
+  } catch (error) {
+    setCupomAplicado(null);
+    setMensagemCupom(
+      error.response?.data?.erro || 'Não foi possível validar o cupom.'
+    );
+  } finally {
+    setCarregandoCupom(false);
+  }
+};
+
+const removerCupom = () => {
+  setCupomAplicado(null);
+  setCodigoCupom('');
+  setMensagemCupom('');
+};
+
+
+const subtotal = getTotal();
+
+const desconto = cupomAplicado
+  ? Math.min(
+      subtotal,
+      cupomAplicado.tipo === 'porcentagem'
+        ? subtotal * (Number(cupomAplicado.valor) / 100)
+        : Number(cupomAplicado.valor)
+    )
+  : 0;
+
+const totalComDesconto = Math.max(0, subtotal - desconto);
+
+
 
   // 🔥 Rolar para o CONTEÚDO DO CARRINHO
   useEffect(() => {
@@ -187,26 +242,95 @@ export default function Carrinho() {
             <div className="bg-white rounded-2xl shadow-sm p-4 md:p-6 sticky top-24">
               <h2 className="text-base md:text-lg font-bold text-gray-900 mb-4">Resumo do Pedido</h2>
               
+<div className="mb-5">
+  <label
+    htmlFor="codigo-cupom"
+    className="block text-sm font-medium text-gray-700 mb-2"
+  >
+    Cupom de desconto
+  </label>
+
+  <form
+    className="flex gap-2"
+    onSubmit={(e) => {
+      e.preventDefault();
+      aplicarCupom();
+    }}
+  >
+    <input
+      id="codigo-cupom"
+      type="text"
+      value={codigoCupom}
+      onChange={(e) => setCodigoCupom(e.target.value.toUpperCase())}
+      placeholder="Digite seu cupom"
+      disabled={!!cupomAplicado || carregandoCupom}
+      className="min-w-0 flex-1 rounded-xl border border-gray-200 px-3 py-2 text-sm outline-none focus:border-gray-500"
+    />
+
+    {cupomAplicado ? (
+      <button
+        type="button"
+        onClick={removerCupom}
+        className="rounded-xl border border-gray-200 px-3 py-2 text-sm text-red-600 hover:bg-gray-50"
+      >
+        Remover
+      </button>
+    ) : (
+      <button
+        type="submit"
+        disabled={carregandoCupom}
+        className="rounded-xl bg-black px-4 py-2 text-sm text-white hover:bg-gray-800 disabled:opacity-50"
+      >
+        {carregandoCupom ? 'Verificando...' : 'Aplicar'}
+      </button>
+    )}
+  </form>
+
+  {mensagemCupom && (
+    <p
+      role="status"
+      className={`mt-2 text-xs ${
+        cupomAplicado ? 'text-green-600' : 'text-red-600'
+      }`}
+    >
+      {mensagemCupom}
+    </p>
+  )}
+</div>
+
+              
               <div className="space-y-2 md:space-y-3 border-b border-gray-200 pb-4">
                 <div className="flex justify-between text-xs md:text-sm">
                   <span className="text-gray-600">Subtotal</span>
                   <span className="text-gray-900 font-medium">
-                    R$ {getTotal().toFixed(2).replace('.', ',')}
+                    R$ {subtotal.toFixed(2).replace('.', ',')}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs md:text-sm">
                   <span className="text-gray-600">Frete</span>
                   <span className="text-gray-500 font-medium">A calcular</span>
                 </div>
+                
+{cupomAplicado && (
+  <div className="flex justify-between gap-3 text-xs md:text-sm">
+    <span className="text-green-600">
+      Desconto ({cupomAplicado.codigo})
+    </span>
+    <span className="font-medium text-green-600">
+      - R$ {desconto.toFixed(2).replace('.', ',')}
+    </span>
+  </div>
+)}
+
               </div>
 
               <div className="flex justify-between text-base md:text-lg font-bold text-gray-900 pt-4">
                 <span>Total</span>
-                <span>R$ {getTotal().toFixed(2).replace('.', ',')}</span>
+                <span>R$ {totalComDesconto.toFixed(2).replace('.', ',')}</span>
               </div>
 
               <button
-                onClick={() => sendToWhatsApp(WHATSAPP_NUMBER)}
+                onClick={() => sendToWhatsApp(WHATSAPP_NUMBER, cupomAplicado?.codigo)}
                 className="w-full mt-4 md:mt-6 py-3 md:py-3.5 bg-green-500 hover:bg-green-600 text-white rounded-full font-medium flex items-center justify-center gap-2 transition-colors text-sm md:text-base"
               >
                 <CreditCard size={18} className="md:w-5 md:h-5" />
