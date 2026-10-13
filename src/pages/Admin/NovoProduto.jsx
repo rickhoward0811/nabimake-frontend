@@ -1,12 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, Image, Tag, DollarSign, List, CheckCircle, Plus, Trash2 } from 'lucide-react';
-import { useAdmin } from '../../context/AdminContext';
-import api from '../../api/api';
-import Toast from '../../components/Toast';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  ArrowLeft,
+  Save,
+  Image,
+  Tag,
+  DollarSign,
+  List,
+  CheckCircle,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import { useAdmin } from "../../context/AdminContext";
+import api from "../../api/api";
+import Toast from "../../components/Toast";
 
 // 🔒 URL SEGURA DO ADMIN - MUDE AQUI
-const ADMIN_BASE = '/n4b1m4k3jul143r1c4rd0l1nd0s';
+const ADMIN_BASE = "/n4b1m4k3jul143r1c4rd0l1nd0s";
 
 export default function NovoProduto() {
   const navigate = useNavigate();
@@ -14,16 +24,17 @@ export default function NovoProduto() {
   const [categorias, setCategorias] = useState([]);
   const [toast, setToast] = useState(null);
   const [variacoes, setVariacoes] = useState([
-    { cor: '', imagem_url: '', ativo: true, ordem: 0 }
+    { cor: "", imagem_url: "", ativo: true, ordem: 0 },
   ]);
   const [formData, setFormData] = useState({
-    nome: '',
-    categoria_id: '',
-    preco: '',
-    descricao: '',
-    imagem_url: '',
+    nome: "",
+    categoria_id: "",
+    preco: "",
+    descricao: "",
+    imagem_url: "",
     ativo: true,
-    ordem: 0
+    ordem: 0,
+    estoque: 0,
   });
 
   useEffect(() => {
@@ -32,24 +43,24 @@ export default function NovoProduto() {
 
   const fetchCategorias = async () => {
     try {
-      const response = await api.get('/categorias');
+      const response = await api.get("/categorias");
       setCategorias(response.data);
     } catch (error) {
-      console.error('Erro ao carregar categorias:', error);
-      showToast('Erro ao carregar categorias', 'error');
+      console.error("Erro ao carregar categorias:", error);
+      showToast("Erro ao carregar categorias", "error");
     }
   };
 
-  const showToast = (message, type = 'success') => {
+  const showToast = (message, type = "success") => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
   };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -60,12 +71,15 @@ export default function NovoProduto() {
   };
 
   const addVariacao = () => {
-    setVariacoes([...variacoes, { cor: '', imagem_url: '', ativo: true, ordem: variacoes.length }]);
+    setVariacoes([
+      ...variacoes,
+      { cor: "", imagem_url: "", ativo: true, ordem: variacoes.length },
+    ]);
   };
 
   const removeVariacao = (index) => {
     if (variacoes.length <= 1) {
-      showToast('É necessário ter pelo menos uma variação', 'warning');
+      showToast("É necessário ter pelo menos uma variação", "warning");
       return;
     }
     const newVariacoes = variacoes.filter((_, i) => i !== index);
@@ -77,28 +91,32 @@ export default function NovoProduto() {
     setLoading(true);
 
     try {
-      const variacoesInvalidas = variacoes.some(v => !v.cor.trim());
+      const variacoesInvalidas = variacoes.some((v) => !v.cor.trim());
       if (variacoesInvalidas) {
-        showToast('Preencha o nome de todas as variações', 'error');
+        showToast("Preencha o nome de todas as variações", "error");
         setLoading(false);
         return;
       }
 
       const dataToSend = {
         ...formData,
-        preco: parseFloat(formData.preco.replace(',', '.')) || 0,
-        variacoes: variacoes
+        preco: parseFloat(formData.preco.replace(",", ".")) || 0,
+        estoque: Number(formData.estoque),
+        variacoes: variacoes,
       };
-      
-      await api.post('/admin/produtos', dataToSend);
-      showToast('✅ Produto criado com sucesso!', 'success');
-      
+      await api.post("/admin/produtos", dataToSend);
+      showToast("✅ Produto criado com sucesso!", "success");
+
       setTimeout(() => {
         navigate(`${ADMIN_BASE}/dashboard`);
       }, 1500);
     } catch (error) {
-      console.error('Erro ao criar produto:', error);
-      showToast('❌ Erro ao criar produto: ' + (error.response?.data?.erro || 'Tente novamente'), 'error');
+      console.error("Erro ao criar produto:", error);
+      showToast(
+        "❌ Erro ao criar produto: " +
+          (error.response?.data?.erro || "Tente novamente"),
+        "error",
+      );
     } finally {
       setLoading(false);
     }
@@ -112,23 +130,34 @@ export default function NovoProduto() {
             onClick={() => navigate(`${ADMIN_BASE}/dashboard`)}
             className="p-2.5 bg-white rounded-xl shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-200 group"
           >
-            <ArrowLeft size={20} className="text-gray-600 group-hover:text-gray-900" />
+            <ArrowLeft
+              size={20}
+              className="text-gray-600 group-hover:text-gray-900"
+            />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Novo Produto</h1>
-            <p className="text-sm text-gray-500">Adicione um novo produto ao catálogo</p>
+            <p className="text-sm text-gray-500">
+              Adicione um novo produto ao catálogo
+            </p>
           </div>
         </div>
 
         {/* Formulário */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-6"
+        >
           {/* Nome */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">
               Nome do Produto <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <Tag className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Tag
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={18}
+              />
               <input
                 type="text"
                 name="nome"
@@ -148,7 +177,10 @@ export default function NovoProduto() {
                 Categoria <span className="text-red-500">*</span>
               </label>
               <div className="relative">
-                <List className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <List
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  size={18}
+                />
                 <select
                   name="categoria_id"
                   value={formData.categoria_id}
@@ -171,7 +203,10 @@ export default function NovoProduto() {
                 Preço (R$) <span className="text-red-500">*</span>
               </label>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <DollarSign
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  size={18}
+                />
                 <input
                   type="text"
                   name="preco"
@@ -183,6 +218,29 @@ export default function NovoProduto() {
                 />
               </div>
             </div>
+          </div>
+
+          {/* Estoque */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              Quantidade em estoque *
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                name="estoque"
+                value={formData.estoque}
+                onChange={handleChange}
+                required
+                min="0"
+                step="1"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+                placeholder="Ex.: 10"
+              />
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Informe quantas unidades estão disponíveis.
+            </p>
           </div>
 
           {/* Descrição */}
@@ -206,7 +264,10 @@ export default function NovoProduto() {
               URL da Imagem
             </label>
             <div className="relative">
-              <Image className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Image
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={18}
+              />
               <input
                 type="url"
                 name="imagem_url"
@@ -219,12 +280,13 @@ export default function NovoProduto() {
             {formData.imagem_url && (
               <div className="mt-3">
                 <p className="text-xs text-gray-500 mb-1">Pré-visualização:</p>
-                <img 
-                  src={formData.imagem_url} 
-                  alt="Preview" 
+                <img
+                  src={formData.imagem_url}
+                  alt="Preview"
                   className="h-24 w-24 object-cover rounded-xl border border-gray-200 shadow-sm"
                   onError={(e) => {
-                    e.target.src = 'https://via.placeholder.com/100x100?text=Erro+na+imagem';
+                    e.target.src =
+                      "https://via.placeholder.com/100x100?text=Erro+na+imagem";
                   }}
                 />
               </div>
@@ -235,8 +297,12 @@ export default function NovoProduto() {
           <div className="border-t border-gray-200 pt-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Variações</h3>
-                <p className="text-sm text-gray-500">Adicione cores ou variações do produto</p>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Variações
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Adicione cores ou variações do produto
+                </p>
               </div>
               <button
                 type="button"
@@ -249,7 +315,10 @@ export default function NovoProduto() {
             </div>
 
             {variacoes.map((variacao, index) => (
-              <div key={index} className="bg-gray-50 rounded-xl p-4 mb-4 relative">
+              <div
+                key={index}
+                className="bg-gray-50 rounded-xl p-4 mb-4 relative"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -258,7 +327,9 @@ export default function NovoProduto() {
                     <input
                       type="text"
                       value={variacao.cor}
-                      onChange={(e) => handleVariacaoChange(index, 'cor', e.target.value)}
+                      onChange={(e) =>
+                        handleVariacaoChange(index, "cor", e.target.value)
+                      }
                       placeholder="Ex: Vermelho, Azul, Cor 1"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm"
                       required
@@ -271,7 +342,13 @@ export default function NovoProduto() {
                     <input
                       type="url"
                       value={variacao.imagem_url}
-                      onChange={(e) => handleVariacaoChange(index, 'imagem_url', e.target.value)}
+                      onChange={(e) =>
+                        handleVariacaoChange(
+                          index,
+                          "imagem_url",
+                          e.target.value,
+                        )
+                      }
                       placeholder="https://exemplo.com/cor1.jpg"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm"
                     />
@@ -282,7 +359,9 @@ export default function NovoProduto() {
                     <input
                       type="checkbox"
                       checked={variacao.ativo !== false}
-                      onChange={(e) => handleVariacaoChange(index, 'ativo', e.target.checked)}
+                      onChange={(e) =>
+                        handleVariacaoChange(index, "ativo", e.target.checked)
+                      }
                       className="w-4 h-4 text-pink-500 focus:ring-pink-500 rounded border-gray-300"
                     />
                     <label className="text-xs text-gray-600">Ativo</label>
@@ -292,7 +371,13 @@ export default function NovoProduto() {
                     <input
                       type="number"
                       value={variacao.ordem || index}
-                      onChange={(e) => handleVariacaoChange(index, 'ordem', parseInt(e.target.value) || 0)}
+                      onChange={(e) =>
+                        handleVariacaoChange(
+                          index,
+                          "ordem",
+                          parseInt(e.target.value) || 0,
+                        )
+                      }
                       className="w-16 px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
                       min="0"
                     />
@@ -309,12 +394,13 @@ export default function NovoProduto() {
                 </div>
                 {variacao.imagem_url && (
                   <div className="mt-2">
-                    <img 
-                      src={variacao.imagem_url} 
-                      alt={variacao.cor} 
+                    <img
+                      src={variacao.imagem_url}
+                      alt={variacao.cor}
                       className="h-12 w-12 object-cover rounded-lg border border-gray-200"
                       onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/50x50?text=Erro';
+                        e.target.src =
+                          "https://via.placeholder.com/50x50?text=Erro";
                       }}
                     />
                   </div>
@@ -335,7 +421,9 @@ export default function NovoProduto() {
               />
               <label className="text-sm font-medium text-gray-700 cursor-pointer">
                 Produto ativo
-                <span className="block text-xs text-gray-400 font-normal">Visível no catálogo</span>
+                <span className="block text-xs text-gray-400 font-normal">
+                  Visível no catálogo
+                </span>
               </label>
             </div>
 
@@ -372,14 +460,30 @@ export default function NovoProduto() {
               <Save size={18} />
               {loading ? (
                 <>
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Salvando...
                 </>
               ) : (
-                'Salvar Produto'
+                "Salvar Produto"
               )}
             </button>
           </div>
